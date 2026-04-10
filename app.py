@@ -440,21 +440,13 @@ def auth_logout():
     session.pop('discord_user', None)
     flash('Logged out.', 'success')
     return redirect(url_for('accounts'))
-
-def _get_redirect_uri():
-    # Use Replit dev domain if available, otherwise use the request host
-    dev_domain = os.environ.get("REPLIT_DEV_DOMAIN")
-    if dev_domain:
-        return f"https://{dev_domain}/auth/callback"
-    # In production deployment REPLIT_DOMAINS contains the live domain
-    prod_domains = os.environ.get("REPLIT_DOMAINS", "")
-    if prod_domains:
-        domain = prod_domains.split(",")[0].strip()
-        return f"https://{domain}/auth/callback"
-    # Fallback
+    #1
+    def _get_redirect_uri():
+    custom = os.environ.get("DISCORD_REDIRECT_URI")
+    if custom:
+        return custom
     base = request.host_url.rstrip('/')
     return f"{base}/auth/callback"
-
 # ── Public accounts page (shows ALL hosted bots) ────────────────────────────
 
 @app.route('/accounts')
