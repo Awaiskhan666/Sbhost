@@ -20,7 +20,6 @@ _db_url = os.environ.get("DATABASE_URL", "sqlite:///bot_data.db")
 if _db_url.startswith("postgres://"):
     _db_url = _db_url.replace("postgres://", "postgresql://", 1)
 app.config["SQLALCHEMY_DATABASE_URI"] = _db_url
-}
 
 # Initialize database
 from models import db, BotConfiguration, AuthorizedUser, CommandLog, BotAnalytics, TargetUser, AFKStatus, BotSession, HostedAccount
