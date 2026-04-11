@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: sbhost1
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:application

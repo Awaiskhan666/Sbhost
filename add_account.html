@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Host Your Account — SelfBot Host</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:#0b0b0d;color:#c8c8d4;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+
+    nav{background:#0f0f12;border-bottom:1px solid #1a1a22;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-size:15px;font-weight:700;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
+    .nav-logo .dot{width:8px;height:8px;border-radius:50%;background:#5865f2;display:inline-block}
+    .nav-back{text-decoration:none;color:#6b6b80;font-size:13px;display:flex;align-items:center;gap:6px}
+    .nav-back:hover{color:#fff}
+
+    .page{display:flex;justify-content:center;padding:60px 20px 80px}
+
+    .card{background:#0f0f12;border:1px solid #1a1a22;border-radius:16px;padding:36px;width:100%;max-width:460px}
+
+    .card-header{margin-bottom:28px}
+    .card-header h1{font-size:22px;font-weight:800;color:#fff;margin-bottom:6px}
+    .card-header p{font-size:13px;color:#5a5a70;line-height:1.5}
+
+    .how-to{background:#0b0b0e;border:1px solid #161620;border-radius:10px;padding:16px;margin-bottom:24px}
+    .how-to-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#3a3a50;margin-bottom:12px}
+    .step{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;font-size:13px;color:#6b6b80;line-height:1.5}
+    .step:last-child{margin-bottom:0}
+    .step-n{width:20px;height:20px;border-radius:50%;background:#1a1a24;color:#5865f2;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .step code{color:#5865f2;background:#0d0d18;padding:1px 5px;border-radius:4px;font-size:12px}
+
+    .warn-box{background:#1a0d0d;border:1px solid #2a1010;border-radius:8px;padding:12px 14px;margin-bottom:22px;font-size:12px;color:#7a3a3a;line-height:1.5}
+    .warn-box strong{color:#ed4245}
+
+    label{display:block;font-size:12px;font-weight:600;color:#6b6b80;letter-spacing:.4px;margin-bottom:7px}
+    input[type=password]{width:100%;background:#0b0b0e;border:1px solid #1a1a22;border-radius:8px;color:#fff;font-size:14px;padding:11px 13px;outline:none;transition:border-color .2s;font-family:inherit}
+    input[type=password]:focus{border-color:#5865f2}
+    .hint{font-size:11px;color:#3a3a50;margin-top:6px;line-height:1.4}
+
+    .btn{width:100%;background:#5865f2;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;padding:13px;cursor:pointer;margin-top:16px;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn:hover{background:#4752c4}
+    .btn:disabled{background:#2a2a3a;cursor:not-allowed}
+
+    .cancel{display:block;text-align:center;margin-top:16px;color:#3a3a50;font-size:12px;text-decoration:none}
+    .cancel:hover{color:#6b6b80}
+
+    .flash-wrap{margin-bottom:18px}
+    .flash{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:8px}
+    .flash.success{background:#0d2918;border:1px solid #23a55a;color:#57f287}
+    .flash.warning{background:#2a1f05;border:1px solid #f0a30a;color:#f0b429}
+    .flash.danger{background:#2a0d0d;border:1px solid #ed4245;color:#ff7b7b}
+
+    #spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/accounts" class="nav-logo"><span class="dot"></span> SelfBot Host</a>
+  <a href="/accounts" class="nav-back">← Back to accounts</a>
+</nav>
+
+<div class="page">
+  <div class="card">
+    <div class="card-header">
+      <h1>Host Your Account</h1>
+      <p>Add your Discord token and your account will be online 24/7 within seconds.</p>
+    </div>
+
+    <div class="flash-wrap">
+      {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+          <div class="flash {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+    </div>
+
+    <div class="how-to">
+      <div class="how-to-title">How to get your token</div>
+      <div class="step"><span class="step-n">1</span><span>Open Discord in your browser (not the app) and press <strong style="color:#9b9bab">F12</strong></span></div>
+      <div class="step"><span class="step-n">2</span><span>Go to <strong style="color:#9b9bab">Network</strong> tab → type <code>api/v9</code> → reload the page</span></div>
+      <div class="step"><span class="step-n">3</span><span>Click any request → <strong style="color:#9b9bab">Headers</strong> → copy the <code>Authorization</code> value</span></div>
+    </div>
+
+    <div class="warn-box">
+      <strong>⚠ Warning:</strong> Only submit your token if you trust this platform. Your token gives full access to your Discord account.
+    </div>
+
+    <form method="POST" action="/accounts/add" id="add-form">
+      <div>
+        <label>DISCORD TOKEN</label>
+        <input type="password" name="token" id="token-input" placeholder="Paste your token here..." required autocomplete="off"/>
+        <div class="hint">Your token is validated against Discord's API and stored securely.</div>
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn">
+        <span id="btn-text">Start Instance →</span>
+        <span id="spinner"></span>
+      </button>
+    </form>
+
+    <a href="/accounts" class="cancel">Cancel</a>
+  </div>
+</div>
+
+<script>
+  document.getElementById('add-form').addEventListener('submit', function() {
+    const btn = document.getElementById('submit-btn');
+    const txt = document.getElementById('btn-text');
+    const spin = document.getElementById('spinner');
+    btn.disabled = true;
+    txt.textContent = 'Validating token...';
+    spin.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
