@@ -155,7 +155,15 @@ def auth_callback():
             'code': code,
             'redirect_uri': redirect_uri,
         }, headers={'Content-Type': 'application/x-www-form-urlencoded'}, timeout=10)
-        token_data = token_resp.json()
+        print("STATUS:", token_resp.status_code)
+print("RAW RESPONSE:", token_resp.text)
+
+try:
+    token_data = token_resp.json()
+except Exception as e:
+    print("JSON ERROR:", e)
+    flash('Discord login failed. Try again.', 'danger')
+    return redirect(url_for('accounts'))
         access_token = token_data.get('access_token')
         if not access_token:
             flash('Failed to get Discord access token. Try again.', 'danger')
